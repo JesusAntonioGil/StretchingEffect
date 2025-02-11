@@ -11,7 +11,7 @@ import SwiftUI
 struct StretchingEffectApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView(destinationHandler: NavigationCoordinator())
         }
     }
 }
