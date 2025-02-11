@@ -22,15 +22,36 @@ struct AppDetailsScreen: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 150, height: 150)
+                    
                     Text(app.title)
                         .font(.title)
                         .bold()
                         .padding(.top, 8)
                         .foregroundStyle(.white)
                         .padding(.top, calculateExtraPadding())
+                    
                     HStack {
-                        actionButton(.install)
-                        actionButton(.sendFeedback)
+                        Group {
+                            Button {
+                                print("Button Install Tapped")
+                            } label: {
+                                Text("Install")
+                                    .bold()
+                                    .frame(maxWidth: .infinity)
+                            }
+                            
+                            Button {
+                                print("Button Send Feedback Tapped")
+                            } label: {
+                                Text("Send Feedback")
+                                    .bold()
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .padding()
+                        .background(.ultraThinMaterial.opacity(0.7))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .tint(.primary)
                     }
                     .foregroundStyle(.white)
                     .padding([.top, .horizontal], 24)
@@ -42,7 +63,8 @@ struct AppDetailsScreen: View {
                 .background(BackgroundImage())
                 
                 Group {
-                    infoSection
+                    InfoSection
+                    
                     Text("What to test")
                         .font(.title2)
                         .bold()
@@ -77,30 +99,32 @@ struct AppDetailsScreen: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 35, height: 35)
                     .opacity(navBarAppIconVisible ? 1 : 0)
-                    .animation(
-                        .smooth(duration: 0.1),
-                        value: navBarAppIconVisible
-                    )
+                    .animation(.smooth(duration: 0.1), value: navBarAppIconVisible)
             }
         }
     }
     
-    private var infoSection: some View {
+    private var InfoSection: some View {
         HStack {
             VStack(alignment: .center, spacing: 8) {
                 Text("DEVELOPER")
                     .fontWeight(.semibold)
+                
                 Image(systemName: "person.crop.square")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 20, height: 20)
+                
                 Text(app.developer)
             }
             .frame(maxWidth: .infinity)
+            
             Divider()
+            
             VStack(alignment: .center, spacing: 8) {
                 Text("CATEGORY")
                     .fontWeight(.semibold)
+                
                 Image(systemName: "bubble.left.and.bubble.right.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -108,13 +132,17 @@ struct AppDetailsScreen: View {
                 Text(app.category)
             }
             .frame(maxWidth: .infinity)
+            
             Divider()
+            
             VStack(alignment: .center, spacing: 8) {
                 Text("EXPIRES")
                     .fontWeight(.semibold)
+                
                 Text("\(app.expirationDays)")
                     .font(.headline)
                     .frame(height: 20)
+                
                 Text("Days")
             }
             .frame(maxWidth: .infinity)
@@ -131,21 +159,11 @@ struct AppDetailsScreen: View {
         .font(.caption)
     }
     
-    private func actionButton(_ type: ActionButtonType) -> some View {
-        Button {} label: {
-            Text(type.title)
-                .bold()
-                .frame(maxWidth: .infinity)
-        }
-        .padding()
-        .background(.ultraThinMaterial.opacity(0.7))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .tint(.primary)
-    }
     
     @ViewBuilder
     private func BackgroundImage() -> some View {
         let additionalHeight: CGFloat = max(0, -scrollOffsetY)
+        
         GeometryReader { proxy in
             Image(app.iconName)
                 .resizable()
@@ -157,10 +175,7 @@ struct AppDetailsScreen: View {
                 }
                 .clipped()
                 .offset(y: min(0, scrollOffsetY))
-                .frame(
-                    width: proxy.size.width,
-                    height: proxy.size.height + additionalHeight
-                )
+                .frame(width: proxy.size.width, height: proxy.size.height + additionalHeight)
         }
     }
     
@@ -168,6 +183,8 @@ struct AppDetailsScreen: View {
         max(0, -scrollOffsetY) * 0.15
     }
 }
+
+
 
 #Preview {
     @Previewable @StateObject var coordinator = NavigationCoordinator()
@@ -181,21 +198,5 @@ struct AppDetailsScreen: View {
             }
     }
     .tint(.primary)
-}
-
-extension AppDetailsScreen {
-    private enum ActionButtonType {
-        case install
-        case sendFeedback
-        
-        var title: String {
-            switch self {
-            case .install:
-                "Install"
-            case .sendFeedback:
-                "Send Feedback"
-            }
-        }
-    }
 }
 
